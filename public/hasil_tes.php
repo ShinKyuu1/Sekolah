@@ -11,7 +11,7 @@ $active_ta = $_SESSION['tahun_ajaran'] ?? '2024/2025 Ganjil';
 $user = currentUser();
 
 // --- Proses Tambah Data ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_hasil']) && $user['role'] === 'admin') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_hasil'])) {
     $tanggal = trim($_POST['tanggal'] ?? '');
     $siswaId = (int) ($_POST['siswa_id'] ?? 0);
     $guruId = (int) ($_POST['guru_id'] ?? 0);
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_hasil']) && $user
 }
 
 // --- Proses Edit Data ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_hasil']) && $user['role'] === 'admin') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_hasil'])) {
     $id = (int)($_POST['id'] ?? 0);
     $tanggal = trim($_POST['tanggal'] ?? '');
     $siswaId = (int) ($_POST['siswa_id'] ?? 0);
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_hasil']) && $use
 }
 
 // --- Proses Hapus Data ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && $user['role'] === 'admin') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $deleteId = (int) $_POST['delete_id'];
     $stmt = db()->prepare('DELETE FROM hasil_tes WHERE id = :id');
     $stmt->execute(['id' => $deleteId]);
@@ -149,11 +149,9 @@ require_once __DIR__ . '/../app/views/layout/header.php';
     <div class="guru-card" style="margin-top: 0;">
         <!-- TOOLBAR -->
         <div class="guru-toolbar">
-            <?php if ($user['role'] === 'admin'): ?>
-                <button type="button" class="btn-tambah-guru" onclick="openModal()">
-                    <span>+</span> Tambah Data
-                </button>
-            <?php endif; ?>
+            <button type="button" class="btn-tambah-guru" onclick="openModal()">
+                <span>+</span> Tambah Data
+            </button>
             <div class="guru-search-wrapper">
                 <form method="GET" action="<?= BASE_URL ?>hasil_tes.php"
                     style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
@@ -201,7 +199,7 @@ require_once __DIR__ . '/../app/views/layout/header.php';
                         <th>Nilai</th>
                         <th>Naik Ke Jilid</th>
                         <th>Keterangan</th>
-                        <?php if ($user['role'] === 'admin'): ?><th>Aksi</th><?php endif; ?>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -225,30 +223,28 @@ require_once __DIR__ . '/../app/views/layout/header.php';
                                 </td>
                                 <td data-label="Naik Ke Jilid"><?= escape_html($result['naik_ke_jilid'] ?? '-') ?></td>
                                 <td data-label="Keterangan"><?= escape_html($result['keterangan'] ?? '-') ?></td>
-                                <?php if ($user['role'] === 'admin'): ?>
-                                    <td data-label="Aksi">
-                                        <div class="action-buttons-claude">
-                                            <a href="#" class="btn-edit-claude" title="Edit Data"
-                                                onclick="openEditModal(<?= htmlspecialchars(json_encode($result), ENT_QUOTES, 'UTF-8') ?>); return false;">
-                                                <img src="<?= BASE_URL ?>../assets/images/pencil%20edit.png" alt="Edit"
-                                                    onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><path d=\'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7\'></path><path d=\'M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z\'></path></svg>'">
-                                            </a>
-                                            <form method="post" action="<?= BASE_URL ?>hasil_tes.php"
-                                                style="display:flex; margin:0;" onsubmit="return confirm('Hapus data ini?')">
-                                                <input type="hidden" name="delete_id" value="<?= $result['id'] ?>">
-                                                <button type="submit" class="btn-delete-claude" title="Hapus Data">
-                                                    <img src="<?= BASE_URL ?>../assets/images/trash%20delete.png" alt="Hapus"
-                                                        onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'3 6 5 6 21 6\'></polyline><path d=\'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\'></path></svg>'">
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                <?php endif; ?>
+                                <td data-label="Aksi">
+                                    <div class="action-buttons-claude">
+                                        <a href="#" class="btn-edit-claude" title="Edit Data"
+                                            onclick="openEditModal(<?= htmlspecialchars(json_encode($result), ENT_QUOTES, 'UTF-8') ?>); return false;">
+                                            <img src="<?= BASE_URL ?>../assets/images/pencil%20edit.png" alt="Edit"
+                                                onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><path d=\'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7\'></path><path d=\'M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z\'></path></svg>'">
+                                        </a>
+                                        <form method="post" action="<?= BASE_URL ?>hasil_tes.php"
+                                            style="display:flex; margin:0;" onsubmit="return confirm('Hapus data ini?')">
+                                            <input type="hidden" name="delete_id" value="<?= $result['id'] ?>">
+                                            <button type="submit" class="btn-delete-claude" title="Hapus Data">
+                                                <img src="<?= BASE_URL ?>../assets/images/trash%20delete.png" alt="Hapus"
+                                                    onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'3 6 5 6 21 6\'></polyline><path d=\'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\'></path></svg>'">
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="<?= $user['role'] === 'admin' ? '10' : '9' ?>"
+                            <td colspan="10"
                                 style="text-align: center; padding: 32px; color: #999;">Tidak ada data yang
                                 ditemukan</td>
                         </tr>
