@@ -1,51 +1,88 @@
 # Sistem Informasi Sekolah - PHP Native
 
-Proyek ini adalah implementasi native PHP untuk website sekolah dengan autentikasi multi-role (Admin dan Guru), manajemen data, dan modul CRUD.
+Proyek ini adalah implementasi aplikasi Sistem Informasi Sekolah berbasis web menggunakan PHP Native. Aplikasi ini dirancang untuk memudahkan manajemen data sekolah, nilai ujian, serta arsip dengan sistem autentikasi multi-role (Admin dan Guru).
 
-## Struktur Direktori
+## 🚀 Fitur Utama
 
-- `public/`: halaman yang dapat diakses oleh browser
-- `assets/`: file CSS dan JS
-- `app/`: logika aplikasi, helper, dan model
-- `config/`: konfigurasi database dan konstanta aplikasi
-- `sql/`: skrip pembuatan database
-- `public/uploads/`: folder file arsip yang diunggah
+- **Multi-Role Authentication**: Akses spesifik dan aman yang terpisah untuk Admin dan Guru.
+- **Dashboard Interaktif**: Ringkasan data akademik dan statistik interaktif dengan tampilan modern.
+- **Manajemen Pengguna & Data Master**:
+  - Modul Data Guru (dilengkapi dengan filter, pencarian cerdas, dan pagination).
+  - Modul Data Siswa.
+  - Modul Data Kelas.
+- **Manajemen Akademik**:
+  - Input, kelola, dan rekap Hasil Tes/Ujian.
+  - Manajemen Tahun Ajaran (Fitur Pilih TA).
+- **Manajemen Arsip**: Upload, simpan, dan kelola dokumen digital secara terpusat.
+- **UI/UX Modern & Responsif**:
+  - Antarmuka yang mulus di berbagai ukuran layar (Desktop & Mobile).
+  - Operasi Tambah/Edit menggunakan _Modal Form_ (Popup) tanpa harus memuat ulang halaman.
+  - Animasi transisi halaman yang elegan.
+- **Keamanan Optimal**:
+  - Menggunakan PDO (PHP Data Objects) _prepared statements_ guna mencegah ancaman _SQL Injection_.
+  - Validasi input yang ketat dan implementasi _password hashing_ untuk keamanan kredensial.
 
-## Setup
+## 🛠️ Teknologi yang Digunakan
 
-1. Buat database MySQL baru.
-2. Impor `sql/schema.sql` ke database MySQL.
-3. (Opsional) Impor `sql/seed.sql` untuk menambahkan data demo.
-4. Pastikan konfigurasi koneksi di `config/database.php` cocok dengan server MySQL Anda.
-5. Arahkan root web server ke folder aplikasi sekolah Anda.
-6. Buka `http://localhost/[path_folder_anda]/` di browser (akan otomatis diarahkan ke halaman login).
+- **Backend**: PHP (Native)
+- **Database**: MySQL / MariaDB
+- **Frontend**: HTML5, CSS3 (Desain kustom eksklusif), Vanilla JavaScript
 
-## Akun Admin Awal (Akses: Pilih TA -> Dashboard)
+## 📋 Prasyarat Sistem
 
-- Username: `admin`
-- Password: `admin123`
+Sebelum memulai, pastikan perangkat atau server lokal Anda telah terpasang:
 
-## Akun Demo Guru (Akses: Langsung Dashboard)
+- Web Server (Apache/Nginx) melalui aplikasi seperti XAMPP, Laragon, atau MAMP.
+- PHP versi 7.4 atau lebih baru.
+- MySQL atau MariaDB.
 
-- Username: `guru_ali`
-- Password: `admin123`
+## ⚙️ Panduan Instalasi (Setup)
 
-_(Tersedia juga akun demo lainnya seperti `guru_siti`, `guru_rizqi`, `guru_ahmad`, dll. Semua menggunakan password: `admin123`)_
+1. **Persiapkan Direktori**
+   Letakkan folder proyek ini di dalam direktori utama web server Anda (contoh: `htdocs` untuk XAMPP atau `www` untuk Laragon).
+2. **Buat Database**
+   - Buka phpMyAdmin (atau _database client_ favorit Anda) lalu buat database baru (misal: `db_sekolah`).
+   - Impor kerangka tabel dari file `sql/schema.sql` ke dalam database tersebut.
+   - _(Opsional)_ Impor file `sql/seed.sql` jika Anda ingin mencoba aplikasi dengan langsung memuat data demo (guru, admin, siswa).
+3. **Konfigurasi Database**
+   - Buka file `config/database.php`.
+   - Ubah konfigurasi akses kredensial (host, username, password, dan nama database) menyesuaikan dengan _environment_ lokal Anda.
+4. **Jalankan Aplikasi**
+   - Akses aplikasi lewat browser melalui URL: `http://localhost/[nama_folder_proyek]/`
+   - Aplikasi secara otomatis akan mengarahkan Anda ke _interface_ halaman login.
 
-## Fitur Utama
+## 🔐 Akses Akun Demo
 
-- Login autentikasi 2 Role (Admin dan Guru)
-- Dashboard ringkasan data dengan Grafik Interaktif
-- Data Guru, Data Siswa, Data Kelas
-- Input Hasil Tes dan Arsip
-- Pagination, Filter jumlah baris (Show Entries), dan Pencarian (Search) Data
-- UI/UX Modern dengan Modal Form (Popup) untuk operasi CRUD
-- Keamanan dasar dengan PDO prepared statements, validasi input, dan password hashing
-- Desain modern, elegan, dan responsif
+Aplikasi ini menyediakan akun demo untuk pengujian fungsionalitas:
 
-## Catatan
+**1. Akun Admin (Akses Penuh + Pilih Tahun Ajaran)**
 
-- Halaman utama (`index.php`) kini secara otomatis melakukan _redirect_ ke halaman login untuk mempercepat alur aplikasi.
-- `public/logout.php` mengakhiri sesi dan mengarahkan kembali ke halaman login.
-- Upload arsip disimpan di `public/uploads/`.
-- Struktur database telah disempurnakan (penambahan kolom nomor HP untuk data Guru).
+- **Username**: `admin`
+- **Password**: `admin123`
+
+**2. Akun Guru (Akses Langsung ke Dashboard)**
+
+- **Username**: `guru_ali`
+- **Password**: `admin123`
+  > _Catatan: Tersedia juga opsi simulasi untuk akun guru lain seperti `guru_siti`, `guru_rizqi`, `guru_ahmad`, dan lainnya dengan password yang sama, yaitu `admin123`._
+
+## 📂 Struktur Direktori
+
+```text
+Sekolah/
+├── app/               # Folder Logika utama (Controller, Helper, Models)
+├── assets/            # File Statis pendukung Frontend (CSS, Fonts, Gambar)
+├── config/            # File Konfigurasi (Koneksi Database, dsb)
+├── public/            # Endpoint publik halaman aplikasi untuk User
+│   └── uploads/       # Media penampung file unggahan arsip sekolah
+├── sql/               # Script query untuk struktur dan data awal Database
+├── index.php          # Entry-point web (otomatis redirect ke sistem Login)
+└── README.md          # Dokumen panduan implementasi aplikasi ini
+```
+
+## 📝 Catatan Tambahan
+
+- **Hak Akses Folder**: Harap pastikan folder `public/uploads/` mempunyai _permission write_ agar proses unggah file arsip dapat berjalan lancar tanpa kendala sistem operasi.
+- **Efisiensi Alur Sistem**: File awalan `index.php` telah dirancang untuk mempercepat navigasi pengguna dengan secara langsung meredirect sesi kosong ke `public/login.php`.
+- **Manajemen Sesi Akhir**: _Endpoint_ `public/logout.php` berfungsi secara otomatis dalam pemusnahan total data _session_ sehingga akun terkunci secara aman sebelum pengguna dikembalikan ke beranda login.
+- **Pembaruan Struktur**: Telah dilakukan penyesuaian fungsional pada arsitektur _database_ terkait pembaruan entitas, contohnya tambahan spesifik kolom pendataan nomor kontak HP guru.

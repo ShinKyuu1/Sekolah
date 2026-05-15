@@ -120,16 +120,18 @@ require_once __DIR__ . '/../app/views/layout/header.php';
         <!-- TOOLBAR -->
         <div class="guru-toolbar">
             <?php if ($user['role'] === 'admin'): ?>
-                <button type="button" class="btn-tambah-guru" onclick="openModal()">
-                    <span>+</span> Tambah Data
-                </button>
+            <button type="button" class="btn-tambah-guru" onclick="openModal()">
+                <img src="<?= BASE_URL ?>../assets/images/vektor_positif.png" alt="Tambah"
+                    style="width: 32px; height: 32px; object-fit: contain; filter: brightness(0) invert(1);"> Tambah
+                Data
+            </button>
             <?php endif; ?>
             <div class="guru-search-wrapper">
                 <form method="GET" action="<?= BASE_URL ?>siswa.php"
                     style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
                     <input type="hidden" name="filter_jilid" value="<?= escape_html($filter_jilid) ?>">
                     <div class="guru-search-container" style="width: 260px; position: relative;">
-                        <img src="<?= BASE_URL ?>../assets/images/vektor%20search.png" alt="Search"
+                        <img src="<?= BASE_URL ?>../assets/images/vektor_search.png" alt="Search"
                             class="guru-search-icon" onerror="this.style.display='none'">
                         <input type="text" name="q" placeholder="Search..." value="<?= escape_html($search) ?>"
                             style="width: 100%;">
@@ -201,40 +203,40 @@ require_once __DIR__ . '/../app/views/layout/header.php';
                 </thead>
                 <tbody>
                     <?php if (count($students) > 0): ?>
-                        <?php foreach ($students as $index => $student): ?>
-                            <tr>
-                                <td data-label="No"><?= $offset + $index + 1 ?></td>
-                                <td data-label="Nama Siswa"><?= escape_html($student['nama_siswa']) ?></td>
-                                <td data-label="Kelas"><?= escape_html($student['kelas']) ?></td>
-                                <td data-label="Jilid"><?= escape_html($student['jilid']) ?></td>
-                                <td data-label="Halaman"><?= escape_html($student['halaman'] ?? '-') ?></td>
-                                <?php if ($user['role'] === 'admin'): ?>
-                                    <td data-label="Aksi">
-                                        <div class="action-buttons-claude">
-                                            <a href="#" class="btn-edit-claude" title="Edit Data"
-                                                onclick="openEditModal(<?= htmlspecialchars(json_encode($student), ENT_QUOTES, 'UTF-8') ?>); return false;">
-                                                <img src="<?= BASE_URL ?>../assets/images/pencil%20edit.png" alt="Edit"
-                                                    onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><path d=\'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7\'></path><path d=\'M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z\'></path></svg>'">
-                                            </a>
-                                            <form method="post" action="<?= BASE_URL ?>siswa.php" style="display:flex; margin:0;"
-                                                onsubmit="return confirm('Hapus siswa ini?')">
-                                                <input type="hidden" name="delete_id" value="<?= $student['id'] ?>">
-                                                <button type="submit" class="btn-delete-claude" title="Hapus Data">
-                                                    <img src="<?= BASE_URL ?>../assets/images/trash%20delete.png" alt="Hapus"
-                                                        onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'3 6 5 6 21 6\'></polyline><path d=\'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\'></path></svg>'">
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                <?php endif; ?>
-                            </tr>
-                        <?php endforeach; ?>
+                    <?php foreach ($students as $index => $student): ?>
+                    <tr>
+                        <td data-label="No"><?= $offset + $index + 1 ?></td>
+                        <td data-label="Nama Siswa"><?= escape_html($student['nama_siswa']) ?></td>
+                        <td data-label="Kelas"><?= escape_html($student['kelas']) ?></td>
+                        <td data-label="Jilid"><?= escape_html($student['jilid']) ?></td>
+                        <td data-label="Halaman"><?= escape_html($student['halaman'] ?? '-') ?></td>
+                        <?php if ($user['role'] === 'admin'): ?>
+                        <td data-label="Aksi">
+                            <div class="action-buttons-claude">
+                                <a href="#" class="btn-edit-claude" title="Edit Data"
+                                    onclick="openEditModal(<?= htmlspecialchars(json_encode($student), ENT_QUOTES, 'UTF-8') ?>); return false;">
+                                    <img src="<?= BASE_URL ?>../assets/images/pencil_edit.png" alt="Edit"
+                                        onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><path d=\'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7\'></path><path d=\'M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z\'></path></svg>'">
+                                </a>
+                                <form method="post" action="<?= BASE_URL ?>siswa.php" style="display:flex; margin:0;"
+                                    onsubmit="return confirm('Hapus siswa ini?')">
+                                    <input type="hidden" name="delete_id" value="<?= $student['id'] ?>">
+                                    <button type="submit" class="btn-delete-claude" title="Hapus Data">
+                                        <img src="<?= BASE_URL ?>../assets/images/trash_delete.png" alt="Hapus"
+                                            onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'3 6 5 6 21 6\'></polyline><path d=\'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\'></path></svg>'">
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                        <?php endif; ?>
+                    </tr>
+                    <?php endforeach; ?>
                     <?php else: ?>
-                        <tr>
-                            <td colspan="<?= $user['role'] === 'admin' ? '6' : '5' ?>"
-                                style="text-align: center; padding: 32px; color: #999;">Tidak ada data yang
-                                ditemukan</td>
-                        </tr>
+                    <tr>
+                        <td colspan="<?= $user['role'] === 'admin' ? '6' : '5' ?>"
+                            style="text-align: center; padding: 32px; color: #999;">Tidak ada data yang
+                            ditemukan</td>
+                    </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -248,46 +250,46 @@ require_once __DIR__ . '/../app/views/layout/header.php';
 
         <!-- PAGINATION -->
         <?php if ($total_pages > 1): ?>
-            <div class="guru-pagination">
-                <?php if ($page > 1): ?>
-                    <a
-                        href="?page=1&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>">«
-                        Pertama</a>
-                    <a
-                        href="?page=<?= $page - 1 ?>&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>">‹
-                        Sebelumnya</a>
-                <?php endif; ?>
+        <div class="guru-pagination">
+            <?php if ($page > 1): ?>
+            <a
+                href="?page=1&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>">«
+                Pertama</a>
+            <a
+                href="?page=<?= $page - 1 ?>&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>">‹
+                Sebelumnya</a>
+            <?php endif; ?>
 
-                <?php
+            <?php
                 $start_page = max(1, $page - 2);
                 $end_page = min($total_pages, $page + 2);
 
                 if ($start_page > 1): ?>
-                    <span>...</span>
-                <?php endif;
+            <span>...</span>
+            <?php endif;
 
                 for ($i = $start_page; $i <= $end_page; $i++): ?>
-                    <?php if ($i == $page): ?>
-                        <span class="active"><?= $i ?></span>
-                    <?php else: ?>
-                        <a
-                            href="?page=<?= $i ?>&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>"><?= $i ?></a>
-                    <?php endif; ?>
-                <?php endfor;
+            <?php if ($i == $page): ?>
+            <span class="active"><?= $i ?></span>
+            <?php else: ?>
+            <a
+                href="?page=<?= $i ?>&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>"><?= $i ?></a>
+            <?php endif; ?>
+            <?php endfor;
 
                 if ($end_page < $total_pages): ?>
-                    <span>...</span>
-                <?php endif; ?>
+            <span>...</span>
+            <?php endif; ?>
 
-                <?php if ($page < $total_pages): ?>
-                    <a
-                        href="?page=<?= $page + 1 ?>&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>">Selanjutnya
-                        ›</a>
-                    <a
-                        href="?page=<?= $total_pages ?>&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>">Terakhir
-                        »</a>
-                <?php endif; ?>
-            </div>
+            <?php if ($page < $total_pages): ?>
+            <a
+                href="?page=<?= $page + 1 ?>&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>">Selanjutnya
+                ›</a>
+            <a
+                href="?page=<?= $total_pages ?>&q=<?= urlencode($search) ?>&show_entries=<?= $show_entries ?>&filter_jilid=<?= urlencode($filter_jilid) ?>">Terakhir
+                »</a>
+            <?php endif; ?>
+        </div>
         <?php endif; ?>
     </div>
 </section>
@@ -404,51 +406,51 @@ require_once __DIR__ . '/../app/views/layout/header.php';
 </div>
 
 <script>
-    function openModal() {
-        document.getElementById('modalTambahData').classList.add('show');
-        document.body.style.overflow = 'hidden';
+function openModal() {
+    document.getElementById('modalTambahData').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('modalTambahData').classList.remove('show');
+    document.body.style.overflow = 'auto';
+    document.getElementById('formTambahData').reset();
+}
+
+function openEditModal(student) {
+    document.getElementById('edit_id').value = student.id || '';
+    document.getElementById('edit_id_siswa').value = student.id_siswa || '';
+    document.getElementById('edit_nis').value = student.nis || '';
+    document.getElementById('edit_nama_siswa').value = student.nama_siswa || '';
+    document.getElementById('edit_kelas').value = student.kelas || '';
+    document.getElementById('edit_jilid').value = student.jilid || '';
+    document.getElementById('edit_halaman').value = student.halaman || '';
+
+    document.getElementById('modalEditData').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditModal() {
+    document.getElementById('modalEditData').classList.remove('show');
+    document.body.style.overflow = 'auto';
+    document.getElementById('formEditData').reset();
+}
+
+window.addEventListener('click', function(event) {
+    const modalTambah = document.getElementById('modalTambahData');
+    const modalEdit = document.getElementById('modalEditData');
+    if (event.target === modalTambah) {
+        closeModal();
+    } else if (event.target === modalEdit) {
+        closeEditModal();
     }
+});
 
-    function closeModal() {
-        document.getElementById('modalTambahData').classList.remove('show');
-        document.body.style.overflow = 'auto';
-        document.getElementById('formTambahData').reset();
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+        closeEditModal();
     }
-
-    function openEditModal(student) {
-        document.getElementById('edit_id').value = student.id || '';
-        document.getElementById('edit_id_siswa').value = student.id_siswa || '';
-        document.getElementById('edit_nis').value = student.nis || '';
-        document.getElementById('edit_nama_siswa').value = student.nama_siswa || '';
-        document.getElementById('edit_kelas').value = student.kelas || '';
-        document.getElementById('edit_jilid').value = student.jilid || '';
-        document.getElementById('edit_halaman').value = student.halaman || '';
-
-        document.getElementById('modalEditData').classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeEditModal() {
-        document.getElementById('modalEditData').classList.remove('show');
-        document.body.style.overflow = 'auto';
-        document.getElementById('formEditData').reset();
-    }
-
-    window.addEventListener('click', function(event) {
-        const modalTambah = document.getElementById('modalTambahData');
-        const modalEdit = document.getElementById('modalEditData');
-        if (event.target === modalTambah) {
-            closeModal();
-        } else if (event.target === modalEdit) {
-            closeEditModal();
-        }
-    });
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeModal();
-            closeEditModal();
-        }
-    });
+});
 </script>
 <?php require_once __DIR__ . '/../app/views/layout/footer.php';

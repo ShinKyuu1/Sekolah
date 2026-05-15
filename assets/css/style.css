@@ -3,6 +3,11 @@
   box-sizing: border-box;
 }
 
+html.has-scrollbar-gutter {
+  /* Mencegah efek "glitch" (lompatan layout) saat popup modal terbuka dengan menyediakan ruang permanen untuk scrollbar */
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -13,6 +18,17 @@ body {
 a {
   color: #0d47a1;
   text-decoration: none;
+}
+
+/* Mencegah kursor teks (I-beam) muncul di tombol dan menghapus outline fokus agar tidak terlihat seperti form input */
+button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+button:focus {
+  outline: none;
 }
 
 button,
@@ -448,11 +464,15 @@ textarea {
 .login-card {
   width: 100%;
   max-width: 460px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.65); /* Efek Kaca (Glassmorphism) */
+  backdrop-filter: blur(16px); /* Buramkan gambar latar di belakang card */
+  -webkit-backdrop-filter: blur(16px); /* Dukungan untuk Safari iOS */
   border-radius: 32px;
   padding: 42px 40px;
-  box-shadow: 0 24px 54px rgba(15, 23, 42, 0.12);
-  border: 1px solid rgba(209, 213, 219, 0.85);
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5); /* Shadow lebih dalam & outline kilau kaca */
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .login-card__small {
@@ -599,13 +619,32 @@ textarea {
 }
 
 .login-right {
-  background: #eef2f7 url("../images/bg_login.png") no-repeat right top;
-  background-size: 200%;
-  padding: 64px 48px;
+  background: #eef2f7 url("../images/bg_login.png") right top no-repeat;
+  background-size: 250% auto; /* Fallback untuk browser lawas */
+  background-size: max(250%, 150vh) auto;
   padding: 60px 48px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Mencegah seleksi teks (kursor berkedip) di luar area input form */
+.login-card,
+.ta-card,
+.login-title,
+.login-heading,
+.ta-heading,
+.ta-subheading,
+.input-group {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.input-group {
+  cursor: text; /* Memberikan indikasi bahwa seluruh kotak abu-abu ini bisa diklik untuk mengetik */
 }
 
 .login-card {
@@ -807,6 +846,39 @@ textarea {
   font-size: 20px;
   color: #000;
   font-family: "Kameron", sans-serif;
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto; /* Mengizinkan teks HANYA bisa diseleksi di dalam form ini saja */
+}
+
+/* --- Animasi Icon Mata (Password) --- */
+.password-toggle-btn {
+  position: relative;
+}
+.password-toggle-btn .input-icon-svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -12px;
+  margin-left: -12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.eye-open {
+  opacity: 0;
+  transform: scale(0.5) rotate(-45deg);
+}
+.eye-closed {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+.password-toggle-btn.show-password .eye-closed {
+  opacity: 0;
+  transform: scale(0.5) rotate(45deg);
+}
+.password-toggle-btn.show-password .eye-open {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
 }
 
 /* === New App Layout === */
@@ -1233,7 +1305,12 @@ textarea {
 
 /* --- Modal Tambah Data --- */
 .modal {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   z-index: 1000;
   left: 0;
@@ -1243,22 +1320,13 @@ textarea {
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px); /* Dukungan untuk browser Safari */
-  animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal.show {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .modal-content {
@@ -1268,20 +1336,16 @@ textarea {
   width: 90%;
   max-width: 500px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  animation: slideUp 0.3s;
   max-height: 90vh;
   overflow-y: auto;
+  transform: translateY(30px) scale(0.95);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.modal.show .modal-content {
+  transform: translateY(0) scale(1);
+  opacity: 1;
 }
 
 /* --- Custom Confirm Modal (Peringatan Global) --- */
@@ -1551,17 +1615,122 @@ textarea {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.user-avatar {
-  width: 36px;
-  height: 36px;
+.user-greeting-wrapper {
+  position: relative;
+}
+
+.user-greeting {
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.user-greeting:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.user-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f3e8ff;
+  border: 2px solid #a855f7;
+}
+
+.profile-dropdown-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  transform: rotate(-90deg);
+  transition: transform 0.3s ease;
+  margin-left: 4px;
+}
+
+.user-greeting-wrapper.open .profile-dropdown-icon {
+  transform: rotate(0deg);
+}
+
+.profile-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background: #fff;
+  min-width: 240px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+  border: 1px solid #e2e8f0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-greeting-wrapper.open .profile-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.profile-dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #334155;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background-color 0.2s;
+}
+
+.profile-dropdown-menu a:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* --- Modal Avatar Preview --- */
+.avatar-preview-wrapper {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.avatar-preview-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f8fafc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: #f3e8ff;
+  user-select: none;
+  -webkit-user-drag: none; /* Mencegah gambar ikut ketarik saat diklik */
+}
+
+.avatar-upload-label {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
   background: #a855f7;
   color: #fff;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* --- Dashboard Cards (Moved from dashboard.php) --- */
@@ -1741,7 +1910,9 @@ textarea {
 .chart-bar::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 24px); /* Posisinya dinaikkan agar tidak menutupi angka permanen */
+  bottom: calc(
+    100% + 24px
+  ); /* Posisinya dinaikkan agar tidak menutupi angka permanen */
   left: 50%;
   transform: translateX(-50%) translateY(5px);
   background-color: #1f2937;
@@ -1948,21 +2119,37 @@ textarea {
 .ta-page-body {
   min-height: 100vh;
   margin: 0;
-  background: url("../images/bg_tampilan%20TA.png") center center / cover
+  background: url("../images/bg_tampilan_TA.png") center center / cover
     no-repeat;
   background-attachment: fixed;
   font-family: "Kameron", sans-serif;
   position: relative; /* Mengunci elemen di dalamnya */
 }
 
-.ta-center-logos {
+.ta-logos-wrapper {
   position: absolute;
-  top: 35vh; /* Sejajar dengan form */
-  left: 28%; /* Terkunci pas di tengah gerbang putih */
-  transform: translateX(-50%);
-  display: flex;
-  gap: 24px; /* Jarak pas (tidak terlalu dekat, tidak terlalu jauh) */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Klik dapat menembus wrapper ini */
   z-index: 10;
+}
+
+.ta-logo-left {
+  position: absolute;
+  top: 42vh; /* Posisi pada gerbang kiri */
+  left: 26.7%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.ta-logo-right {
+  position: absolute;
+  top: 42vh; /* Posisi pada gerbang kanan */
+  right: 26.5%;
+  transform: translateX(50%);
+  pointer-events: auto;
 }
 
 .ta-logo-img {
@@ -1981,15 +2168,25 @@ textarea {
 
 .ta-card-container {
   position: absolute;
-  top: 35vh; /* Sejajar dengan logo */
-  right: 18%; /* Terkunci di atas dudukan Al-Qur'an */
+  top: 30vh; /* Diangkat sedikit agar sentral di gerbang besar */
+  left: 50.2%; /* Digeser sedikit ke kanan (sebelumnya 50%) */
+  transform: translateX(-50%); /* Sentris sempurna */
   width: 100%;
-  max-width: 560px; /* Card diperbesar secara keseluruhan */
+  max-width: 460px; /* Dikembalikan ukurannya ke semula agar persis seperti login */
   z-index: 20;
 }
 
 .ta-card {
-  padding: 70px 60px; /* Padding di dalam card diperbesar */
+  width: 100%;
+  background: rgba(255, 255, 255, 0.65); /* Efek Kaca (Glassmorphism) */
+  backdrop-filter: blur(16px); /* Buramkan gambar latar di belakang card */
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 32px;
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 42px 40px; /* Dikembalikan paddingnya seperti login */
 }
 
 .ta-heading {
@@ -2146,7 +2343,7 @@ textarea {
 .preloader-overlay {
   position: fixed;
   inset: 0; /* Memenuhi layar penuh (top, left, right, bottom 0) */
-  background: #ffffff; /* Putih solid / tidak tembus pandang */
+  background: #ffffff url("../images/bg_animpreload.png") center/cover no-repeat;
   z-index: 9999; /* Pastikan selalu berada di paling atas layar */
   display: flex;
   justify-content: center;
@@ -2154,6 +2351,14 @@ textarea {
   transition:
     opacity 1.5s ease,
     visibility 1.5s ease;
+}
+/* Gelapkan sedikit gambar background agar cincin animasi dan logo semakin menonjol (fokus) */
+.preloader-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 0;
 }
 .preloader-overlay.hidden {
   opacity: 0;
@@ -2188,9 +2393,98 @@ textarea {
 
 /* --- Tambahan Tema Loading ke-2 (Spinning Rings) --- */
 .preloader-logos-ring {
+  position: relative;
+  z-index: 1;
   display: flex;
-  gap: 40px;
+  gap: 50px;
   align-items: center;
+  animation: floatRings 5s 5s ease-in-out infinite; /* Mulai mengambang setelah portal terbelah */
+}
+.preloader-logo-wrapper.left-logo {
+  opacity: 0;
+  animation: portalSplitLeft 5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.preloader-logo-wrapper.right-logo {
+  opacity: 0;
+  animation: portalSplitRight 5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes portalSplitLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(85px) scale(0); /* Posisi 85px = Tepat di tengah */
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(85px) scale(1); /* Portal Terbuka */
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(85px) scale(1); /* Menunggu Logo Keluar */
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1); /* Bergeser ke kiri */
+  }
+}
+@keyframes portalSplitRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-85px) scale(0); /* Posisi -85px = Tepat di tengah */
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(-85px) scale(1); /* Portal Terbuka */
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(-85px) scale(1); /* Menunggu Logo Keluar */
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1); /* Bergeser ke kanan */
+  }
+}
+
+/* --- Animasi Logo Tumbuh dari Dalam Portal --- */
+.left-logo .preloader-logo {
+  animation: portalLogoEmergeLeft 5s forwards;
+}
+.right-logo .preloader-logo {
+  animation: portalLogoEmergeRight 5s forwards;
+}
+@keyframes portalLogoEmergeLeft {
+  0%,
+  15% {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+  }
+  50%,
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+@keyframes portalLogoEmergeRight {
+  0%,
+  15% {
+    opacity: 0;
+    transform: scale(0) rotate(180deg);
+  }
+  50%,
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes floatRings {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 .preloader-logo-wrapper {
   position: relative;
@@ -2199,25 +2493,46 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
+  background: rgba(255, 255, 255, 0.7); /* Efek Kaca / Glassmorphism */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 50%;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
 }
-/* Memastikan logo di dalam cincin tidak ikut membesar-mengecil agar cincin terlihat rapi */
 .preloader-logo-wrapper .preloader-logo {
-  width: 80px;
-  height: 80px;
+  width: 75px;
+  height: 75px;
   z-index: 2;
 }
 .preloader-ring {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+  top: -12.5%;
+  left: -12.5%;
+  width: 125%; /* Skala 125% matematis diatur agar cincin memeluk pas di garis pinggir luar lingkaran kaca */
+  height: 125%;
+  z-index: 3;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  opacity: 0; /* Mulai dalam keadaan tersembunyi */
 }
 .ring-cw {
-  animation: spinCw 2s linear infinite; /* Putaran searah jarum jam */
+  animation:
+    showRing 0.8s 1.6s ease-in forwards,
+    spinCw 2.5s linear infinite;
 }
 .ring-ccw {
-  animation: spinCcw 2s linear infinite; /* Putaran berlawanan arah jarum jam */
+  animation:
+    showRing 0.8s 1.6s ease-in forwards,
+    spinCcw 2.5s linear infinite;
+}
+@keyframes showRing {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 .preloader-ring .path {
   stroke-linecap: round;
@@ -2480,16 +2795,28 @@ textarea {
     padding-left: 20px;
     padding-right: 20px;
   }
-  .ta-center-logos {
+  .ta-logos-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    width: 100%;
+    height: auto;
+  }
+  .ta-logo-left,
+  .ta-logo-right {
     position: relative;
     top: auto;
     left: auto;
+    right: auto;
     transform: none;
   }
   .ta-card-container {
     position: relative;
     top: auto;
+    left: auto;
     right: auto;
+    transform: none;
     margin-top: 0;
   }
 }
@@ -2537,10 +2864,9 @@ textarea {
   .user-greeting {
     padding: 4px 12px 4px 4px;
   }
-  .user-avatar {
-    width: 30px;
-    height: 30px;
-    font-size: 14px;
+  .user-avatar-img {
+    width: 28px;
+    height: 28px;
   }
   .app-header-right .nav-user {
     display: none; /* Sembunyikan nama di HP untuk menghemat ruang, sisakan Avatar */

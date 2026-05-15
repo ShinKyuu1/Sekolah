@@ -36,25 +36,27 @@ require_once __DIR__ . '/../app/views/layout/header.php';
     <!-- Dua Kartu Utama -->
     <div class="dashboard-custom-grid">
         <div class="custom-card card-blue">
-            <div class="card-bg-overlay" style="background-image: url('<?= BASE_URL ?>../assets/images/v20_51.png');">
+            <div class="card-bg-overlay"
+                style="background-image: url('<?= BASE_URL ?>../assets/images/bg_card_blue.png');">
             </div>
             <h3 class="card-title">Jumlah Siswa Tes</h3>
             <div class="card-data">
                 <span class="card-number"><?= $totalHasilTes ?></span>
                 <span class="card-unit">Orang</span>
             </div>
-            <img src="<?= BASE_URL ?>../assets/images/v20_47.png" class="card-icon" alt="Icon Tes">
+            <img src="<?= BASE_URL ?>../assets/images/user_many.png" class="card-icon" alt="Icon Tes">
         </div>
 
         <div class="custom-card card-pink">
-            <div class="card-bg-overlay" style="background-image: url('<?= BASE_URL ?>../assets/images/v85_109.png');">
+            <div class="card-bg-overlay"
+                style="background-image: url('<?= BASE_URL ?>../assets/images/bg_card_pink.png');">
             </div>
             <h3 class="card-title">Data Siswa</h3>
             <div class="card-data">
                 <span class="card-number"><?= $totalSiswa ?></span>
                 <span class="card-unit">Orang</span>
             </div>
-            <img src="<?= BASE_URL ?>../assets/images/v85_112.png" class="card-icon" alt="Icon Siswa">
+            <img src="<?= BASE_URL ?>../assets/images/user_many.png" class="card-icon" alt="Icon Siswa">
         </div>
     </div>
 
@@ -68,9 +70,9 @@ require_once __DIR__ . '/../app/views/layout/header.php';
         $totalSiswaPerTingkat[$row['tingkat']] = (int)$row['total'];
     }
 
-    // 2. Ambil data siswa yang 'Lulus' per jilid dan tingkatan kelas untuk TA aktif
-    $stmtLulus = db()->prepare("SELECT jilid, SUBSTRING(kelas, 1, 1) as tingkat, COUNT(DISTINCT siswa_id) as total_lulus FROM hasil_tes WHERE nilai = 'Lulus' AND tahun_ajaran = :ta GROUP BY jilid, tingkat");
-    $stmtLulus->execute(['ta' => $active_ta]);
+    // 2. Ambil data sebaran jilid siswa saat ini per tingkatan kelas untuk TA aktif
+    $stmtJilid = db()->prepare("SELECT jilid, SUBSTRING(kelas, 1, 1) as tingkat, COUNT(*) as total_siswa FROM kelas WHERE tahun_ajaran = :ta GROUP BY jilid, tingkat");
+    $stmtJilid->execute(['ta' => $active_ta]);
 
     // 3. Set struktur nilai default grafik ke 0
     $chartData = [
@@ -83,14 +85,14 @@ require_once __DIR__ . '/../app/views/layout/header.php';
     ];
 
     // 4. Hitung persentase
-    foreach ($stmtLulus->fetchAll() as $row) {
+    foreach ($stmtJilid->fetchAll() as $row) {
         $jilid = $row['jilid'];
         $tingkat = $row['tingkat'];
-        $lulus = (int)$row['total_lulus'];
+        $jumlahSiswa = (int)$row['total_siswa'];
 
         if (isset($chartData[$jilid]) && in_array($tingkat, ['7', '8', '9'])) {
             $totalSiswa = $totalSiswaPerTingkat[$tingkat] ?? 0;
-            $persentase = $totalSiswa > 0 ? round(($lulus / $totalSiswa) * 100) : 0;
+            $persentase = $totalSiswa > 0 ? round(($jumlahSiswa / $totalSiswa) * 100) : 0;
             $chartData[$jilid]["k{$tingkat}"] = min(100, $persentase); // Capping di angka 100%
         }
     }
@@ -113,23 +115,26 @@ require_once __DIR__ . '/../app/views/layout/header.php';
 
         <div class="chart-container">
             <?php foreach ($chartData as $label => $data): ?>
-                <div class="chart-group">
-                    <div class="chart-bar color-7" style="height: <?= $data['k7'] ?>%;" data-tooltip="Kelas 7 : <?= $data['k7'] ?>%">
-                        <span class="chart-value"><?= $data['k7'] ?>%</span>
-                    </div>
-                    <div class="chart-bar color-8" style="height: <?= $data['k8'] ?>%;" data-tooltip="Kelas 8 : <?= $data['k8'] ?>%">
-                        <span class="chart-value"><?= $data['k8'] ?>%</span>
-                    </div>
-                    <div class="chart-bar color-9" style="height: <?= $data['k9'] ?>%;" data-tooltip="Kelas 9 : <?= $data['k9'] ?>%">
-                        <span class="chart-value"><?= $data['k9'] ?>%</span>
-                    </div>
+            <div class="chart-group">
+                <div class="chart-bar color-7" style="height: <?= $data['k7'] ?>%;"
+                    data-tooltip="Kelas 7 : <?= $data['k7'] ?>%">
+                    <span class="chart-value"><?= $data['k7'] ?>%</span>
                 </div>
+                <div class="chart-bar color-8" style="height: <?= $data['k8'] ?>%;"
+                    data-tooltip="Kelas 8 : <?= $data['k8'] ?>%">
+                    <span class="chart-value"><?= $data['k8'] ?>%</span>
+                </div>
+                <div class="chart-bar color-9" style="height: <?= $data['k9'] ?>%;"
+                    data-tooltip="Kelas 9 : <?= $data['k9'] ?>%">
+                    <span class="chart-value"><?= $data['k9'] ?>%</span>
+                </div>
+            </div>
             <?php endforeach; ?>
         </div>
 
         <div class="chart-labels">
             <?php foreach ($chartData as $label => $data): ?>
-                <div class="chart-label"><?= $label ?></div>
+            <div class="chart-label"><?= $label ?></div>
             <?php endforeach; ?>
         </div>
     </div>

@@ -32,40 +32,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tahun_ajaran'])) {
     <link href="https://fonts.googleapis.com/css?family=JejuMyeongjo|Kameron|Kaisei+Opti|Kaisei+Tokumin&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="<?= BASE_URL ?>../assets/css/style.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_URL ?>../assets/images/favicon_io/apple-touch-icon.png">
+    <link rel="shortcut icon" href="<?= BASE_URL ?>../assets/images/favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= BASE_URL ?>../assets/images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= BASE_URL ?>../assets/images/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="<?= BASE_URL ?>../assets/images/favicon_io/site.webmanifest">
 </head>
 
 <body class="ta-page-body">
     <!-- Preloader Animasi Loading -->
-    <div class="preloader-overlay" id="preloader">
+    <div class="preloader-overlay hidden" id="preloader" style="transition: none;">
         <!-- Menggunakan Tema 2: Spinning Rings -->
         <div class="preloader-logos-ring">
-            <div class="preloader-logo-wrapper">
+            <div class="preloader-logo-wrapper left-logo">
                 <svg class="preloader-ring ring-cw" viewBox="0 0 50 50">
                     <circle class="path path-blue" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
                 </svg>
-                <img src="<?= BASE_URL ?>../assets/images/logo%20kujang.png" class="preloader-logo kujang"
+                <img src="<?= BASE_URL ?>../assets/images/logo_kujang.png" class="preloader-logo kujang"
                     alt="Logo Kujang">
             </div>
-            <div class="preloader-logo-wrapper">
+            <div class="preloader-logo-wrapper right-logo">
                 <svg class="preloader-ring ring-ccw" viewBox="0 0 50 50">
                     <circle class="path path-purple" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
                 </svg>
-                <img src="<?= BASE_URL ?>../assets/images/logo%20qiroati.png" class="preloader-logo" alt="Logo Qiroati">
+                <img src="<?= BASE_URL ?>../assets/images/logo_qiroati.png" class="preloader-logo" alt="Logo Qiroati">
             </div>
         </div>
     </div>
 
-    <!-- Logo Kujang & Qiroati di tengah gerbang putih -->
-    <div class="ta-center-logos">
-        <img src="<?= BASE_URL ?>../assets/images/logo%20kujang.png" alt="Logo Kujang" class="ta-logo-img logo-kujang"
-            onerror="this.style.display='none'">
-        <img src="<?= BASE_URL ?>../assets/images/logo%20qiroati.png" alt="Logo Qiroati" class="ta-logo-img"
+    <!-- Logo Kujang & Qiroati di gerbang kiri dan kanan -->
+    <div class="ta-logos-wrapper">
+        <img src="<?= BASE_URL ?>../assets/images/logo_kujang.png" alt="Logo Kujang"
+            class="ta-logo-img logo-kujang ta-logo-left" onerror="this.style.display='none'">
+        <img src="<?= BASE_URL ?>../assets/images/logo_qiroati.png" alt="Logo Qiroati" class="ta-logo-img ta-logo-right"
             onerror="this.style.display='none'">
     </div>
 
     <!-- Sisi Kanan (Form TA) -->
     <div class="ta-card-container">
-        <div class="login-card ta-card">
+        <div class="ta-card">
             <h2 class="ta-subheading">Silahkan Pilih TA</h2>
             <div class="ta-divider"></div>
 
@@ -76,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tahun_ajaran'])) {
                         <div class="input-group">
                             <div class="input-icon-wrapper">
                                 <!-- Fallback: Jika gambar vektor tidak ditemukan, akan muncul icon search bawaan -->
-                                <img src="<?= BASE_URL ?>../assets/images/vektor searchTA.png" alt="Search"
+                                <img src="<?= BASE_URL ?>../assets/images/vektor_search.png" alt="Search"
                                     class="ta-search-icon"
                                     onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'black\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><circle cx=\'11\' cy=\'11\' r=\'8\'></circle><line x1=\'21\' y1=\'21\' x2=\'16.65\' y2=\'16.65\'></line></svg>'">
                             </div>
@@ -85,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tahun_ajaran'])) {
                                 class="input-field-main" required autocomplete="off" onclick="openTaDropdown()"
                                 onkeyup="filterTaOptions()">
                             <div class="input-icon-wrapper" onclick="toggleTaDropdown()" style="cursor: pointer;">
-                                <img src="<?= BASE_URL ?>../assets/images/vektor sidebar data.png" alt="Dropdown"
+                                <img src="<?= BASE_URL ?>../assets/images/vektor_sidebar_data.png" alt="Dropdown"
                                     class="ta-dropdown-icon" onerror="this.style.display='none'">
                             </div>
                         </div>
@@ -103,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tahun_ajaran'])) {
                 <div class="ta-footer">
                     <button type="submit" class="btn-proses-green">
                         <div class="btn-icon-wrapper">
-                            <img src="<?= BASE_URL ?>../assets/images/vektor centang.png" alt="Centang"
+                            <img src="<?= BASE_URL ?>../assets/images/vektor_centang.png" alt="Centang"
                                 class="btn-icon-img" onerror="this.style.display='none'">
                         </div>
                         <div class="btn-divider"></div>
@@ -148,26 +154,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tahun_ajaran'])) {
             }
         });
 
-        // Sembunyikan layar loading ketika halaman selesai dimuat
-        window.addEventListener('load', function() {
-            const preloader = document.getElementById('preloader');
-            if (preloader) {
-                setTimeout(function() {
-                    preloader.classList.add('hidden');
-                }, 3500); // Jeda 3.5 detik agar terlihat seperti memuat banyak data
-            }
-        });
-
         function processTa(event) {
             event.preventDefault(); // Mencegah sistem langsung berpindah halaman
             const preloader = document.getElementById('preloader');
             if (preloader) {
-                preloader.style.transition = '';
-                preloader.classList.remove('hidden');
+                // Teknik Clone Node: Hancurkan yang lama, buat baru agar CSS Animation merestart 100% dari detik 0
+                const newPreloader = preloader.cloneNode(true);
+                preloader.parentNode.replaceChild(newPreloader, preloader);
+                newPreloader.style.transition = '';
+                newPreloader.classList.remove('hidden');
             }
             setTimeout(function() {
                 document.getElementById('taForm').submit();
-            }, 3500);
+            }, 5000);
         }
     </script>
 </body>
